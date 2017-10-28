@@ -45,6 +45,14 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
 void RF24::setAutoAck(bool enable)
 {
     // TODO: START HERE
+    if (enable) 
+    {
+      write_register(EN_AA, 0x35); 
+    }
+    else 
+    {
+      write_register(EN_AA, 0);
+    }
     // This function either enables all of the AA bits or disables all of the AA bits in the Enable AutoAck register.
     // TODO: END HERE
 }
