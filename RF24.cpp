@@ -15,13 +15,17 @@
 uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
 {
   uint8_t status = 0;
-  // TODO: START HERE
-  // Implements the R_REGISTER command in the datasheet.
-  // Read len number of bytes into the array pointed to by buf, from the register reg.
-  // Only use DigitalWrite and the Arduino SPI library when implementing this function.
-  // The global variable csn_pin can be used to access the SS pin.
-  // The status variable should be set to the status byte returned by the command (explained in the datasheet).
-  // TODO: END HERE
+  
+  digitalWrite(csn_pin, LOW);
+
+  // R_REGISTER command word in binary is 000A AAAA, where AAAAA = 5bit register map address
+  status = SPI.transfer(0x1F & reg);
+  while (len--) {
+    *buf++ = SPI.transfer(0xFF); // 0xFF = NOP used for reading STATUS register
+  }
+  
+  digitalWrite(csn_pin, HIGH);
+
   return status;
 }
 
@@ -30,13 +34,17 @@ uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
 uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
 {
   uint8_t status = 0;
-  // TODO: START HERE
-  // Implements the W_REGISTER command in the datasheet.
-  // Write len number of bytes from the array pointed to by buf, to the register reg.
-  // Only use DigitalWrite and the Arduino SPI library when implementing this function.
-  // The global variable csn_pin can be used to access the SS pin.
-  // The status variable should be set to the status byte returned by the command (explained in the datasheet).
-  // TODO: END HERE
+
+  digitalWrite(csn_pin, LOW);
+
+  // W_REGISTER command word in binary is 001A AAAA, where AAAAA = 5bit register map address
+  status = SPI.transfer(0x20 | (0x1F & reg) );
+  while (len--) {
+    SPI.transfer(*buff++, 1);
+  }
+  
+  digitalWrite(csn_pin, HIGH);
+
   return status;
 }
 
