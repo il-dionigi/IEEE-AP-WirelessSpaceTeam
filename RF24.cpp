@@ -14,14 +14,20 @@
 
 uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
 {
+  // Implements the R_REGISTER command in the datasheet.
+  // Read len number of bytes into the array pointed to by buf, from the register reg.
+  // Only use DigitalWrite and the Arduino SPI library when implementing this function.
+  // The global variable csn_pin can be used to access the SS pin.
+  // The status variable should be set to the status byte returned by the command (explained in the datasheet).
+	
   uint8_t status = 0;
   
   digitalWrite(csn_pin, LOW);
 
   // R_REGISTER command word in binary is 000A AAAA, where AAAAA = 5bit register map address
-  status = SPI.transfer(0x1F & reg);
+  status = SPI.transfer(REGISTER_MASK & reg);
   while (len--) {
-    *buf++ = SPI.transfer(0xFF); // 0xFF = NOP used for reading STATUS register
+    *buf++ = SPI.transfer(NOP); // NOP = 0xFF, used for reading STATUS register
   }
   
   digitalWrite(csn_pin, HIGH);
@@ -33,12 +39,18 @@ uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
 
 uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
 {
+  // Implements the W_REGISTER command in the datasheet.
+  // Write len number of bytes from the array pointed to by buf, to the register reg.
+  // Only use DigitalWrite and the Arduino SPI library when implementing this function.
+  // The global variable csn_pin can be used to access the SS pin.
+  // The status variable should be set to the status byte returned by the command (explained in the datasheet).
+
   uint8_t status = 0;
 
   digitalWrite(csn_pin, LOW);
 
   // W_REGISTER command word in binary is 001A AAAA, where AAAAA = 5bit register map address
-  status = SPI.transfer(0x20 | (0x1F & reg) );
+  status = SPI.transfer(0x20 | (REGISTER_MASK & reg) );
   while (len--) {
     SPI.transfer(*buff++, 1);
   }
@@ -69,10 +81,23 @@ void RF24::setAutoAck(bool enable)
 
 void RF24::setPALevel(uint8_t level)
 {
-  // TODO: START HERE
   // set the power level bits in the RF_SETUP register based on the level parameter.
   // level can be RF24_PA_MIN, RF24_PA_LOW, RF24_PA_HIGH, or RF24_PA_MAX.
-  // TODO: END HERE
+
+  uint8_t rfsetup = read_register(RF_SETUP);
+  rfsetup &= 0xF9; // clear the two RF_PWR bits: -----00-
+
+  if (level != RF24_PA_MIN)  // leave as 00 for RF24_PA_MIN
+  {
+    if (level == RF24_PA_LOW)
+      rfsetup |= 0x02;  // set to 01
+    else if (level == RF24_PA_HIGH)
+      rfsetup |= 0x04;  // set to 10
+    else if ( (level == RF24_PA_MAX) || (level == RF24_PA_ERROR) ) // if error leave ouptut power at 1mW
+      rfsetup |= 0x06;  // set to 11
+  }
+
+  write_register(RF_SETUP, rfsetup);
 }
 
 /****************************************************************************/
