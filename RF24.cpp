@@ -67,7 +67,7 @@ void RF24::setAutoAck(bool enable)
     // TODO: START HERE
     if (enable) 
     {
-      write_register(EN_AA, 0x35); 
+      write_register(EN_AA, 0x3F); 
     }
     else 
     {
