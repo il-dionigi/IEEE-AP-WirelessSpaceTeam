@@ -20,6 +20,8 @@ uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
   // The global variable csn_pin can be used to access the SS pin.
   // The status variable should be set to the status byte returned by the command (explained in the datasheet).
 	
+	// Call begin and end transaction!
+	
   uint8_t status = 0;
   
   digitalWrite(csn_pin, LOW);
@@ -45,7 +47,7 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
   // The global variable csn_pin can be used to access the SS pin.
   // The status variable should be set to the status byte returned by the command (explained in the datasheet).
 
-  uint8_t status = 0;
+	// Call begin and end transaction!  uint8_t status = 0;
 
   digitalWrite(csn_pin, LOW);
 
@@ -112,7 +114,11 @@ void RF24::setCRCLength(rf24_crclength_e length)
     {
       config &= 0xf7; // ----0---
     }
-    else if (length == RF24_CRC_8) 
+    else {
+   	config |= 0x08l // ----1--- 
+    }
+	
+    if (length == RF24_CRC_8) 
     {
       config &= 0xfb; // -----0--
     }
@@ -129,6 +135,9 @@ void RF24::setRetries(uint8_t delay, uint8_t count)
 {
     // TODO: START HERE
     // Set the delay and count bits in the SETUP_RETR register.
+	
+	// delay is a byte value - we need to shift first? (-Thomas)
+	
     uint8_t setup_retr = count; 
     if (delay == 4000) {
       setup_retr |= 0xf0; // 1111----
