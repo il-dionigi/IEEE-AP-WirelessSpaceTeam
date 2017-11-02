@@ -110,7 +110,7 @@ void RF24::setCRCLength(rf24_crclength_e length)
     uint8_t config = read_register(CONFIG); 
     if (length == RF24_CRC_DISABLED)
     {
-      config &= 0xf7; // ----1---
+      config &= 0xf7; // ----0---
     }
     else if (length == RF24_CRC_8) 
     {
@@ -129,7 +129,7 @@ void RF24::setRetries(uint8_t delay, uint8_t count)
 {
     // TODO: START HERE
     // Set the delay and count bits in the SETUP_RETR register.
-    uint8_t setup_retr = read_register(SETUP_RETR); 
+    uint8_t setup_retr = count; 
     if (delay == 4000) {
       setup_retr |= 0xf0; // 1111----
     }
