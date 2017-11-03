@@ -54,7 +54,7 @@ void loop() {
   radioA.read(&newChar, 1);
   radioA.stopListening();
 
-  series += newChar;
+  series.concat(newChar);
 
   // check button presses
   
@@ -71,12 +71,13 @@ void loop() {
 
       if (state[stateIcr] > currState) {
       	 input += colors[stateIcr];
+	 if (input[count] != series[count])
+      	 	eval = 0;
 	 count++;
       }
       state[stateIcr] = currState;
     }
-    if (input[count] != series[count])
-      eval = 0;
+
   }
   radioA.write(&eval, 1);
 }
