@@ -49,17 +49,12 @@ void loop() {
   // stop loop until bytes available to read
   radioA.startListening();
   while (!radioA.available()) {}
-    Serial.print("Reading from Teensy\n");
+
     // read byte from teensy
     char newChar[] = "";
     radioA.read(&newChar, sizeof(char));
-//    Serial.print("--->");
-//    char theChar[18];
-//    sprintf(theChar, "%s", String(newChar,DEC));
-//    Serial.print("<---");
-    series.concat(newChar);
-//    Serial.print(atoi(newChar));
-//    Serial.print('\n');
+
+    series += newChar;
     len++;
   radioA.stopListening();
     
@@ -87,9 +82,5 @@ void loop() {
         state[stateIcr] = currState;
       } 
   }
-  if (isCorrect)
-    Serial.print("CORRECT");
-  else
-    Serial.print("WRONG");
   radioA.write(&isCorrect, 1);
 }
