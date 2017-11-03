@@ -31,8 +31,8 @@ void setup() {
   radioA.begin();
 
   // Set communication channel
-  radioA(COM_CHANNEL);
-  radioA(RF24_PA_MIN);
+  radioA.setChannel(COM_CHANNEL);
+  radioA.setPALevel(RF24_PA_MIN);
 
   // Set R/W Pipes - Make helper to reopen every time?
   radioA.openReadingPipe(1, TEENSY_WRITE);
