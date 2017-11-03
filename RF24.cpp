@@ -25,13 +25,15 @@ uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
   uint8_t status = 0;
   
   digitalWrite(csn_pin, LOW);
-
+	
+  SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
   // R_REGISTER command word in binary is 000A AAAA, where AAAAA = 5bit register map address
   status = SPI.transfer(REGISTER_MASK & reg);
   while (len--) {
     *buf++ = SPI.transfer(NOP); // NOP = 0xFF, used for reading STATUS register
   }
-  
+  SPI.endTransaction();
+	
   digitalWrite(csn_pin, HIGH);
 
   return status;
@@ -50,13 +52,15 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
 	// Call begin and end transaction!  uint8_t status = 0;
 
   digitalWrite(csn_pin, LOW);
-
+	
+  SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
   // W_REGISTER command word in binary is 001A AAAA, where AAAAA = 5bit register map address
   status = SPI.transfer(0x20 | (REGISTER_MASK & reg) );
   while (len--) {
     SPI.transfer(*buff++, 1);
   }
-  
+  SPI.endTransaction();
+	
   digitalWrite(csn_pin, HIGH);
 
   return status;
@@ -106,7 +110,6 @@ void RF24::setPALevel(uint8_t level)
 
 void RF24::setCRCLength(rf24_crclength_e length)
 {
-    // TODO: START HERE
     // Set the EN_CRC and CRC0 bits in the CONFIG register based on the length parameter.
     // length can either be RF24_CRC_DIABLED, RF24_CRC_8, or RF24_CRC_16.
     uint8_t config = read_register(CONFIG); 
@@ -115,7 +118,7 @@ void RF24::setCRCLength(rf24_crclength_e length)
       config &= 0xf7; // ----0---
     }
     else {
-   	config |= 0x08l // ----1--- 
+      config |= 0x08; // ----1--- 
     }
 	
     if (length == RF24_CRC_8) 
@@ -127,36 +130,15 @@ void RF24::setCRCLength(rf24_crclength_e length)
       config |= 0x04; // -----1--
     }
     write_register(CONFIG, config);
-    // TODO: END HERE
 }
 
 /****************************************************************************/
 void RF24::setRetries(uint8_t delay, uint8_t count)
 {
-    // TODO: START HERE
     // Set the delay and count bits in the SETUP_RETR register.
-	
-	// delay is a byte value - we need to shift first? (-Thomas)
-	
-    uint8_t setup_retr = count; 
-    if (delay == 4000) {
-      setup_retr |= 0xf0; // 1111----
-    }
-    else 
-    {
-      // delay == 250 requirement is precondition for all others
-      setup_retr &= 0x0f; // 0000----
-      if (delay == 500)
-      {
-        setup_retr |= 0x10; // 0001----
-      }
-      else if ( delay == 750)
-      {
-        setup_retr |= 0x20; // 0010----
-      }
-    }
+    uint8_t setup_retr = (delay << 4) | count; 
+    
     write_register(SETUP_RETR, setup_retr);
-    // TODO: END HERE
 }
 
 // DO NOT EDIT ANY FUNCTIONS BELOW THIS LINE
