@@ -22,17 +22,13 @@
 const char colors[] = {R, Y, G};
 
 RF24 radioT = RF24(CEPIN, CSPIN); // initialize
-string series = "";
+String series = "";
 uint8_t len = 0;
 
-setup() {
+void setup() {
   radioT.begin();  //begin
   radioT.setChannel(COM_CHANNEL);  //set unique channel for communication
   radioT.setPALevel(RF24_PA_MIN);
-  // open reading pipe 1 @ address given
-  // Reads from registers in arduino to pipe
-  // Teensy will write its registers from this pipe at this 
-  // address using radio.openWriting(ARDUINO_WRITE)
   radioT.openWritingPipe(TEENSY_WRITE);
   radioT.openReadingPipe(1, ARDUINO_WRITE);
   radioT.setCRCLength(RF24_CRC_16);
@@ -40,7 +36,7 @@ setup() {
   Serial.begin(9600);
 }
 
-loop() {
+void loop() {
   char newChar = colors[random(0, 2)];
   series += newChar;
   len++;
@@ -75,5 +71,4 @@ loop() {
   digitalWrite(G, HIGH);
   delay(2500);
   digitalWrite(G, LOW);   
-
 }
