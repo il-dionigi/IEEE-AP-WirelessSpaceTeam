@@ -70,7 +70,7 @@ void loop() {
       char currState = digitalRead(4 - stateIcr);
 
       if (state[stateIcr] > currState) {
-      	 input += colors[stateIcr];
+      	 input.concat(colors[stateIcr]);
 	 if (input[count] != series[count])
       	 	eval = 0;
 	 count++;
