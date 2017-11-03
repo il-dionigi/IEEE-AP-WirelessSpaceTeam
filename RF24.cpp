@@ -54,11 +54,15 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
   SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
   
   digitalWrite(csn_pin, LOW);
-	
+
+   // uint8_t *wrapBuf = &(*buf);
   // W_REGISTER command word in binary is 001A AAAA, where AAAAA = 5bit register map address
   status = SPI.transfer(0x20 | (REGISTER_MASK & reg) );
+    int i = 0;
   while (len--) {
-    SPI.transfer(*buf++, 1);
+      uint8_t curr = buf[i];
+      i++;
+    SPI.transfer(curr);
   }
   digitalWrite(csn_pin, HIGH);
 
