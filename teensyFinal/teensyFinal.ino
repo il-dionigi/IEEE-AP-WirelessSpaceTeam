@@ -38,11 +38,17 @@ void setup() {
   radioT.setCRCLength(RF24_CRC_16);
 
   Serial.begin(9600);
+  pinMode(R,OUTPUT);
+  pinMode(Y,OUTPUT);
+  pinMode(G,OUTPUT);
 }
 
 void loop() {
-  char newChar = colors[random(0, 2)];
+  char newChar = colors[random(0, 3)];
   series += newChar;
+  Serial.print("--->");
+  Serial.print(newChar,DEC);
+  Serial.print("<---");
   len++;
 
   // display series with leds
@@ -51,6 +57,7 @@ void loop() {
     digitalWrite(series[i], HIGH);
     delay(1000);
     digitalWrite(series[i], LOW);
+    delay(333);
   }
 
   // write newChar to arduino write( const void* buf, uint8_t len );
@@ -62,10 +69,13 @@ void loop() {
 
   char result = 0;
   radioT.read(&result, 1); // read 1 byte (will be 1 or 0) into result
+  Serial.print("result: ");
+  Serial.println(result, DEC);
+  Serial.println("Read");
   radioT.stopListening();
 
   // if good, flash green and continue, else flash red and terminate exit(1)  
-  if (result) {
+  if (!result) {
     digitalWrite(R, HIGH);
     delay(2000);
     digitalWrite(R, LOW);
@@ -74,5 +84,5 @@ void loop() {
 
   digitalWrite(G, HIGH);
   delay(2500);
-  digitalWrite(G, LOW);   
+  digitalWrite(G, LOW);
 }
