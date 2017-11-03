@@ -34,12 +34,12 @@ void setup() {
   pinmode(BUTTON_Y, INPUT);
   pinmode(BUTTON_R, INPUT);
 
-  radioT.begin();  //begin
-  radioT.setChannel(COM_CHANNEL);  //set unique channel for communication
-  radioT.setPALevel(RF24_PA_MIN);
-  radioT.openWritingPipe(ARDUINO_WRITE);
-  radioT.openReadingPipe(1, TEENSY_WRITE);
-  radioT.setCRCLength(RF24_CRC_16);
+  radioA.begin();  //begin
+  radioA.setChannel(COM_CHANNEL);  //set unique channel for communication
+  radioA.setPALevel(RF24_PA_MIN);
+  radioA.openWritingPipe(ARDUINO_WRITE);
+  radioA.openReadingPipe(1, TEENSY_WRITE);
+  radioA.setCRCLength(RF24_CRC_16);
 
   Serial.begin(9600);
 }
@@ -58,7 +58,7 @@ void loop() {
 
   // check button presses
   
-  char state[] = {0, 0, 0};  // green, yellow, red
+  char state[] = {0, 0, 0};  // red, yellow, green
   uint8_t stateIcr = 0;
 
   String input = "";
@@ -67,15 +67,15 @@ void loop() {
   while (eval && (len - count)) {
 
     for (stateIcr = 0; stateIcr < 3, stateIcr++) {
-      char currState = digitalRead(2 + stateIcr);
+      char currState = digitalRead(4 - stateIcr);
 
       if (state[stateIcr] > currState) {
-      	 input += (stateIcr + 17);
+      	 input += colors[stateIcr];
 	 count++;
       }
       state[stateIcr] = currState;
     }
-    if (input[i] != series[i])
+    if (input[count] != series[count])
       eval = 0;
   }
   radioA.write(&eval, 1);
