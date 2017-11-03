@@ -26,6 +26,10 @@ String series = "";
 uint8_t len = 0;
 
 void setup() {
+  pinmode(R, OUTPUT);
+  pinmode(Y, OUTPUT);
+  pinmode(G, OUTPUT);
+  
   radioT.begin();  //begin
   radioT.setChannel(COM_CHANNEL);  //set unique channel for communication
   radioT.setPALevel(RF24_PA_MIN);
@@ -45,7 +49,7 @@ void loop() {
   int i = 0;
   for (; i < len; i++) {
     digitalWrite(series[i], HIGH);
-    delay(333);
+    delay(1000);
     digitalWrite(series[i], LOW);
   }
 
