@@ -58,7 +58,7 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
   // W_REGISTER command word in binary is 001A AAAA, where AAAAA = 5bit register map address
   status = SPI.transfer(0x20 | (REGISTER_MASK & reg) );
   while (len--) {
-    SPI.transfer(*buff++, 1);
+    SPI.transfer(*buf++, 1);
   }
   digitalWrite(csn_pin, HIGH);
 
@@ -111,9 +111,9 @@ void RF24::setPALevel(uint8_t level)
 
 void RF24::setCRCLength(rf24_crclength_e length)
 {
-    // Set the EN_CRC and CRC0 bits in the CONFIG register based on the length parameter.
+    // Set the EN_CRC and CRC0 bits in the NRF_CONFIG register based on the length parameter.
     // length can either be RF24_CRC_DIABLED, RF24_CRC_8, or RF24_CRC_16.
-    uint8_t config = read_register(CONFIG); 
+    uint8_t config = read_register(NRF_CONFIG); 
     if (length == RF24_CRC_DISABLED)
     {
       config &= 0xf7; // ----0---
@@ -130,7 +130,7 @@ void RF24::setCRCLength(rf24_crclength_e length)
     {
       config |= 0x04; // -----1--
     }
-    write_register(CONFIG, config);
+    write_register(NRF_CONFIG, config);
 }
 
 /****************************************************************************/
