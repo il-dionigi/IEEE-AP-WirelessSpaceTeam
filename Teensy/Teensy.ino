@@ -14,6 +14,7 @@
 bool transmitted = false;
 bool received  = false;
 char testWriteA = '$';
+char arr[] = "kojiboji";
 char testWriteT = '&';
 RF24 radioT(CEPIN, CSPIN);
 
@@ -39,9 +40,9 @@ void setup() {
 void loop() {
   
   // Start listening
-  radioT.startListening();
+  //radioT.startListening();
 
-  if (!received)
+ /* if (!received)
   {
     int msgSize = 0;
     char msg[]="";
@@ -55,16 +56,22 @@ void loop() {
         received = true;
       }
     } 
-  }
-  else if (!transmitted)
-  { // Test Teensy
-      radioT.stopListening();
+  }*/
+     /*//radioT.stopListening();
       radioT.write(&testWriteT, sizeof(testWriteT));
-      if (radioT.available())
-      {
-        Serial.print("Teensy successfully wrote");
-        transmitted = true;
-      }
-      radioT.startListening();
-  }
+      //if (radioT.available())
+      //{
+        Serial.println("Teensy successfully wrote");
+        Serial.println(sizeof(testWriteT));
+        //transmitted = true;
+      //}
+*/
+      //if(!transmitted)
+      //{
+        radioT.write(&arr, sizeof(arr));
+        Serial.println("Teensy successfully wrote");
+        Serial.println(sizeof(testWriteT));
+        //transmitted = true;
+      //}
+  
 }
