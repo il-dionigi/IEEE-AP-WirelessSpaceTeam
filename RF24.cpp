@@ -22,17 +22,19 @@ uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
 	
   uint8_t status = 0;
   
+  SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
+  
   digitalWrite(csn_pin, LOW);
 	
-  SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
   // R_REGISTER command word in binary is 000A AAAA, where AAAAA = 5bit register map address
   status = SPI.transfer(REGISTER_MASK & reg);
   while (len--) {
     *buf++ = SPI.transfer(NOP); // NOP = 0xFF, used for reading STATUS register
   }
-  SPI.endTransaction();
-	
+  	
   digitalWrite(csn_pin, HIGH);
+
+  SPI.endTransaction();
 
   return status;
 }
@@ -49,18 +51,19 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
 
   uint8_t status = 0;
 
+  SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
+  
   digitalWrite(csn_pin, LOW);
 	
-  SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
   // W_REGISTER command word in binary is 001A AAAA, where AAAAA = 5bit register map address
   status = SPI.transfer(0x20 | (REGISTER_MASK & reg) );
   while (len--) {
     SPI.transfer(*buff++, 1);
   }
-  SPI.endTransaction();
-	
   digitalWrite(csn_pin, HIGH);
 
+  SPI.endTransaction();
+	
   return status;
 }
 
