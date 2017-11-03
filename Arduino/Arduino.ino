@@ -19,6 +19,7 @@ bool transmitted = false;
 bool received  = false;
 char testWriteA = '$';
 char testWriteT = '&';
+RF24 radioA(CEPIN, CSPIN);
 
 void setup() {
   // put your setup code here, to run once:
@@ -27,7 +28,7 @@ void setup() {
   pinMode(BUTTON3, INPUT);
 
   // Initializing Radio
-  RF24::RF24 radioA(CEPIN, CSPIN);
+  
   radioA.begin();
 
   // Set communication channel
@@ -40,7 +41,8 @@ void setup() {
 
   radioA.setCRCLength(RF24_CRC_16);
   
-  //Serial.begin(9600);
+  Serial.begin(9600);
+  Serial.println("Hello Arduino");
 }
 
 void loop() {
@@ -63,10 +65,10 @@ void loop() {
     int msgSize = 0;
     char msg[]="";
       
-    msgSize = radio.getDynamicPayloadSize();
+    msgSize = radioA.getDynamicPayloadSize();
     if (msgSize > 0) {
       radioA.read( &msg, msgSize );
-      if (msg == testWriteB)
+      if (msg[0] == testWriteT)
       {
         Serial.print("Arduino successfully read");
         received = true;

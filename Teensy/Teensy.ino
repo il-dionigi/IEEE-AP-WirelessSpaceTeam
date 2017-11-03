@@ -15,10 +15,11 @@ bool transmitted = false;
 bool received  = false;
 char testWriteA = '$';
 char testWriteT = '&';
+RF24 radioT(CEPIN, CSPIN);
 
 void setup() {
   // Initializing Radio
-  RF24 radioT(CEPIN, CSPIN);
+  
   radioT.begin();
 
   // Set communication channel
@@ -32,6 +33,7 @@ void setup() {
   radioT.setCRCLength(RF24_CRC_16);
   
   Serial.begin(9600);
+  Serial.println("Hello Teensy");
 }
 
 void loop() {
@@ -47,7 +49,7 @@ void loop() {
     msgSize = radioT.getDynamicPayloadSize();
     if (msgSize > 0) {
       radioT.read( &msg, msgSize );
-      if (msg == testWriteA)
+      if (msg[0] == testWriteA)
       {
         Serial.print("Teensy successfully read");
         received = true;
