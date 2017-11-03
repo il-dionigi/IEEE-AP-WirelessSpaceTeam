@@ -20,8 +20,6 @@ uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
   // The global variable csn_pin can be used to access the SS pin.
   // The status variable should be set to the status byte returned by the command (explained in the datasheet).
 	
-	// Call begin and end transaction!
-	
   uint8_t status = 0;
   
   digitalWrite(csn_pin, LOW);
@@ -49,7 +47,7 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
   // The global variable csn_pin can be used to access the SS pin.
   // The status variable should be set to the status byte returned by the command (explained in the datasheet).
 
-	// Call begin and end transaction!  uint8_t status = 0;
+  uint8_t status = 0;
 
   digitalWrite(csn_pin, LOW);
 	
