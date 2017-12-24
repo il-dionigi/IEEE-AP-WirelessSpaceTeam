@@ -9,4 +9,4 @@ The spec for this project can be found in [spec.pdf](https://github.com/il-dioni
 The files [nRF24L01.h](https://github.com/il-dionigi/IEEE_AP_WirelessSpaceTeam_RF24/blob/master/nRF24L01.h) and [RF24.cpp](https://github.com/il-dionigi/IEEE_AP_WirelessSpaceTeam_RF24/blob/master/RF24.cpp) accordingly contain the registers and methods for the SRI protocol which our team had to figure out ourselves. The rest of the files were contributed by  Stefan Engelke <mbox@stefanengelke.de>, J. Coliz <maniacbug@ymail.com>, and the IEEE AP project leads. 
   
 **Collaborators:**  
-[Brian Dionigi](https://github.com/il-dionigi) | [Kevin Ke-En Sun](https://github.com/inherentlyMalicious) | [Koji Kusumi](https://github.com/kojiboji) | [Rob Griffith](https://github.com/rwgriffithv)
+[Brian Raymond](https://github.com/il-dionigi) | [Kevin Ke-En Sun](https://github.com/inherentlyMalicious) | [Koji Kusumi](https://github.com/kojiboji) | [Rob Griffith](https://github.com/rwgriffithv)
